@@ -57,6 +57,8 @@ dctest:
 dccheck:
 	bin/docker-compose --profile $(TEST_SERVICE_NAME) run --rm test composer check
 
+dcdown:
+	bin/docker-compose down --volumes
 # Include the .d makefiles. The - at the front suppresses the errors of missing
 # Include the .d makefiles.
 -include makefiles.d/*

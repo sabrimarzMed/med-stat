@@ -21,3 +21,20 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
+#analytics service
+    app.service.analytics:
+        class: App\Services\AnalyticsService
+        arguments:
+            - '@event_dispatcher'
+
+    analytics.event:
+        class: App\EventListener\AnalyticsListener
+        tags:
+            - { name: kernel.event_listener, event: analytics_event, method: onAnalyticsEvent }
+        arguments:
+            - '@app.producer.analytics'
+
+    app.producer.analytics:
+        class: App\Producer\AnalyticsProducer
+        arguments:
+            - '@old_sound_rabbit_mq.analytics_producer'

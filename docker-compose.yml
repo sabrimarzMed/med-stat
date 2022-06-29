@@ -6,15 +6,16 @@ x-app: &app
     args:
       UID: ${UID}
       GID: ${GID}
-      BASE_PHP_TAG: ${BASE_PHP_TAG}
   env_file:
     - docker-compose.env
   environment:
     PHP_CLI_MEMORY_LIMIT: "1024M"
+    COMPOSER_HOME: ".composer"
   ports:
-    - "8080"
+    - "4500:8080"
   volumes:
     - ./:/var/www/app
+  restart: on-failure
 
 services:
   app:
