@@ -11,7 +11,6 @@
         "ext-json": "*",
         "baldinof/roadrunner-bundle": "^2.1",
         "composer/package-versions-deprecated": "1.11.99.5",
-        "nelmio/cors-bundle": "^2.2",
         "php-amqplib/rabbitmq-bundle": "^2.8",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpmd/phpmd": "^2.12",
