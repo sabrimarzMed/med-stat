@@ -1,46 +1,24 @@
-name: main workflow
-
 on:
+  # Trigger analysis when pushing to your main branches, and when creating a pull request.
   push:
     branches:
-      - 'master'
-      - 'develop'
-    tags:
-      - '**'
+      - main
+      - master
+      - develop
   pull_request:
-    branches:
-      - 'develop'
-      - 'master'
-    types: [ opened ,closed ,synchronize ,reopened ]
+      types: [opened, synchronize, reopened]
 
+name: Main Workflow
 jobs:
-  lowercase_name:
+  sonarqube:
     runs-on: ubuntu-latest
-    outputs:
-      repository: ${{ steps.toLower.outputs.lowercase }}
     steps:
-      - id: toLower
-        uses: ASzc/change-string-case-action@v2
-        with:
-          string: ${{ github.repository }}
-
-  build-docker-image:
-    needs: lowercase_name
-    if: ((github.event.action != 'closed' && github.event.pull_request.merged != true))
-    uses: ./.github/workflows/build-docker-image-workflow.yml
-    with:
-      REGISTRY: ghcr.io
-      username: ${{ github.actor }}
-      IMAGE: ${{needs.lowercase_name.outputs.repository}}
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
-
-  delete-docker-image:
-    if: ((github.event.action == 'closed' || github.event.pull_request.merged == true))
-    uses: ./.github/workflows/delete-docker-image-workflow.yml
-    with:
-      REGISTRY: ghcr.io
-      username: ${{ github.actor }}
-      TAG: pr-${{ github.event.number }}
-    secrets:
-      token: ${{ secrets.SMARTMEDBOT_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
